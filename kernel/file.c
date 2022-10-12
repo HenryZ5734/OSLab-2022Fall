@@ -180,3 +180,15 @@ filewrite(struct file *f, uint64 addr, int n)
   return ret;
 }
 
+int 
+get_freefd(void){
+  int num=0;
+  struct proc *p = myproc();
+
+  for(int i=0;i<NOFILE;i++){
+    if(p->ofile[i] == 0){
+      num++;
+    }
+  }
+  return num;
+}

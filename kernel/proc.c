@@ -289,6 +289,9 @@ fork(void)
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
+  // copy mask
+  np->mask = p->mask;
+
   safestrcpy(np->name, p->name, sizeof(p->name));
 
   pid = np->pid;
@@ -692,4 +695,18 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+int
+get_unused_proc(void){
+  struct proc *p;
+  int num = 0;
+  for(p = proc;p<&proc[NPROC];p++){
+    acquire(&p->lock);
+    if(p->state == UNUSED){
+      num++;
+    }
+    release(&p->lock);
+  }
+  return num;
 }
